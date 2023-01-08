@@ -1,0 +1,6 @@
+domain: toyamagu-2021.github.io
+layout:
+- go.kubebuilder.io/v3
+projectName: markdown-view
+repo: github.com/toyamagu-2021/markdown-view
+version: "3"
