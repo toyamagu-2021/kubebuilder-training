@@ -37,7 +37,7 @@ type MarkdownViewSpec struct {
 
 	// ViwerImage is the image name of the viewer
 	//+optional
-	ViwerImage string `json:"viewerImage,omitempty"`
+	ViewerImage string `json:"viewerImage,omitempty"`
 }
 
 // MarkdownViewStatus defines the observed state of MarkdownView
