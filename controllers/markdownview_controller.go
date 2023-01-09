@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	"k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -37,12 +38,14 @@ import (
 	appsv1apply "k8s.io/client-go/applyconfigurations/apps/v1"
 	corev1apply "k8s.io/client-go/applyconfigurations/core/v1"
 	metav1apply "k8s.io/client-go/applyconfigurations/meta/v1"
+	"k8s.io/client-go/tools/record"
 )
 
 // MarkdownViewReconciler reconciles a MarkdownView object
 type MarkdownViewReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=view.toyamagu-2021.github.io,resources=markdownviews,verbs=get;list;watch;create;update;patch;delete
@@ -328,6 +331,10 @@ func (r *MarkdownViewReconciler) updateStatus(ctx context.Context, mdView viewv1
 
 	if mdView.Status != status {
 		mdView.Status = status
+
+		// Event Recorder
+		r.Recorder.Event(&mdView, corev1.EventTypeNormal, "Updated", fmt.Sprintf("MarkdownView(%s:%s) updated: %s", mdView.Namespace, mdView.Name, mdView.Status))
+
 		err = r.Status().Update(ctx, &mdView)
 		if err != nil {
 			return ctrl.Result{}, err
